@@ -3,6 +3,7 @@
     "name": "Leftover",
     "slug": "Leftover",
     "version": "1.0.0",
+    "scheme": "Leftover",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
