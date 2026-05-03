@@ -5,7 +5,6 @@ import {
 } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import "react-native-reanimated";
 
 import { SplashScreenController } from "../components/splash-screen-controller";
 
@@ -23,7 +22,7 @@ function RootNavigator() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack.Protected>
       <Stack.Protected guard={!isLoggedIn}>
-        <Stack.Screen name="login" options={{ headerShown: false }} />
+        <Stack.Screen name="Login" options={{ headerShown: false }} />
       </Stack.Protected>
       <Stack.Screen name="+not-found" />
     </Stack>

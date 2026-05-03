@@ -20,7 +20,9 @@ export default function LoginScreen() {
         style={[styles.button, styles.secondaryButton]}
         onPress={() => router.push("/Signup")}
       >
-        <Text style={styles.secondaryButtonText}>Don't have an account? Sign up</Text>
+        <Text style={styles.secondaryButtonText}>
+          Don't have an account? Sign up
+        </Text>
       </TouchableOpacity>
     </View>
   );
