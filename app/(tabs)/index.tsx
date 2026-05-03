@@ -8,12 +8,15 @@ export default function HomeScreen() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Welcome!</Text>
-      <View style={styles.stepContainer}>
-        <Text style={styles.subtitle}>Username</Text>
-        <Text>{profile?.username}</Text>
-        <Text style={styles.subtitle}>Full name</Text>
-        <Text>{profile?.full_name}</Text>
+
+      <View style={styles.card}>
+        <Text style={styles.label}>Username</Text>
+        <Text style={styles.value}>{profile?.username ?? "—"}</Text>
+
+        <Text style={styles.label}>Full name</Text>
+        <Text style={styles.value}>{profile?.full_name ?? "—"}</Text>
       </View>
+
       <SignOutButton />
     </ScrollView>
   );
@@ -21,21 +24,37 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
-    gap: 8,
+    flexGrow: 1,
+    padding: 24,
+    backgroundColor: "#f9f9f9",
   },
   title: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: "bold",
-    marginBottom: 8,
+    color: "#1a1a1a",
+    marginBottom: 24,
   },
-  subtitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginTop: 8,
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 20,
+    gap: 4,
+    shadowColor: "#000",
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  label: {
+    fontSize: 12,
+    color: "#888",
+    marginTop: 12,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  value: {
+    fontSize: 16,
+    color: "#1a1a1a",
+    fontWeight: "500",
   },
 });
