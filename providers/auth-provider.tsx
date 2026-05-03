@@ -38,7 +38,6 @@ export default function AuthProvider({ children }: PropsWithChildren) {
       if (_event === "SIGNED_IN" || _event === "TOKEN_REFRESHED") {
         try {
           const { data } = await supabase.auth.getClaims();
-          console.log("Claims on SIGNED_IN:", data?.claims);
           setClaims(data?.claims ?? null);
         } catch (e) {
           console.error("getClaims failed:", e);

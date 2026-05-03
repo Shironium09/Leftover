@@ -30,9 +30,6 @@ export function useAuth() {
       },
     });
 
-    console.log("Session:", session);
-    console.log("Error:", error);
-
     if (error) {
       Alert.alert(error.message);
       setLoading(false);
