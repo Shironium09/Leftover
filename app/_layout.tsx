@@ -1,22 +1,45 @@
-import React from 'react';
-import {Stack} from 'expo-router';
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
+import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import "react-native-reanimated";
 
-export default function RootLayout(){
+import { SplashScreenController } from "../components/splash-screen-controller";
+
+import { useAuthContext } from "../hooks/use-auth-context";
+import { useColorScheme } from "react-native";
+import AuthProvider from "../providers/auth-provider";
+
+// Separate RootNavigator so we can access the AuthContext
+function RootNavigator() {
+  const { isLoggedIn } = useAuthContext();
 
   return (
-    <Stack screenOptions={{headerShown: false}}>
-      <Stack.Screen name="index" />
-      <Stack.Screen name="Login" />
-      <Stack.Screen name="Signup" />
-      <Stack.Screen name="(tabs)" />
-      <Stack.Screen name="Confirmation" />
-      <Stack.Screen name="RecipeList" />
-      <Stack.Screen name="Recipe" />
-      <Stack.Screen name="Chatbot" />
-      <Stack.Screen name="Timer" />
-      <Stack.Screen name="Settings" />
-      <Stack.Screen name="ShoppingList" />
+    <Stack>
+      <Stack.Protected guard={isLoggedIn}>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      </Stack.Protected>
+      <Stack.Protected guard={!isLoggedIn}>
+        <Stack.Screen name="login" options={{ headerShown: false }} />
+      </Stack.Protected>
+      <Stack.Screen name="+not-found" />
     </Stack>
   );
+}
 
+export default function RootLayout() {
+  const colorScheme = useColorScheme();
+
+  return (
+    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <AuthProvider>
+        <SplashScreenController />
+        <RootNavigator />
+        <StatusBar style="auto" />
+      </AuthProvider>
+    </ThemeProvider>
+  );
 }
