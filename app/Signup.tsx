@@ -56,16 +56,16 @@ export default function SignupScreen() {
                 <View className="flex flex-col gap-5 justify-center items-center">
                     <TouchableOpacity
                         className='bg-emerald-700 rounded-full px-6 py-4'
-                        onPress={() => router.replace('/(tabs)/home')}
+                        onPress={() => router.replace('/Login')}
                     >
-                        <Text className='text-white text-2xl font-bold w-80 text-center'>Login</Text>
+                        <Text className='text-white text-2xl font-bold w-80 text-center'>Signup</Text>
                     </TouchableOpacity>
                     <View className="flex flex-row gap-2">
-                        <Text className='text-center text-xl'>Don't have an account?</Text>
+                        <Text className='text-center text-xl'>Already have an account?</Text>
                         <TouchableOpacity
-                            onPress={() => router.push('/Signup')}
+                            onPress={() => router.push('/Login')}
                         >
-                            <Text className="text-center text-xl text-emerald-700 font-semibold underline underline-offset-4">Signup!</Text>
+                            <Text className="text-center text-xl text-emerald-700 font-semibold underline underline-offset-4">Login!</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
