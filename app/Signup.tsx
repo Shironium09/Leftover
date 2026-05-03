@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, TextInput } from "react-native";
+import { View, Text, TouchableOpacity, TextInput, Alert } from "react-native";
 import { useRouter, Stack } from "expo-router";
 import { Image } from "expo-image";
 import { useAuth } from "../components/Auth";
@@ -14,6 +14,14 @@ export default function SignupScreen() {
   const [confirmPass, setConfirmPass] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+
+  const handleSignUp = () => {
+    if (password !== confirmPass) {
+      Alert.alert("Passwords do not match");
+      return;
+    }
+    signUpWithEmail(firstName, lastName);
+  };
 
   return (
     <View className="flex justify-center bg-stone-100 h-screen py-20">
@@ -67,7 +75,7 @@ export default function SignupScreen() {
         <View className="flex flex-col gap-5 justify-center items-center">
           <TouchableOpacity
             className="bg-emerald-700 rounded-full px-6 py-4"
-            onPress={signUpWithEmail}
+            onPress={handleSignUp}
             disabled={loading}
           >
             <Text className="text-white text-2xl font-bold w-80 text-center">

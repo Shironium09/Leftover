@@ -15,6 +15,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
 
       if (error) {
         console.error("Error fetching claims:", error);
+        await supabase.auth.signOut();
       }
 
       setClaims(data?.claims ?? null);
@@ -31,6 +32,20 @@ export default function AuthProvider({ children }: PropsWithChildren) {
         setClaims(null);
         setProfile(null);
         setIsLoading(false);
+        return;
+      }
+
+      if (_event === "SIGNED_IN" || _event === "TOKEN_REFRESHED") {
+        try {
+          const { data } = await supabase.auth.getClaims();
+          console.log("Claims on SIGNED_IN:", data?.claims);
+          setClaims(data?.claims ?? null);
+        } catch (e) {
+          console.error("getClaims failed:", e);
+          setClaims(null);
+        } finally {
+          setIsLoading(false);
+        }
         return;
       }
 

@@ -4,8 +4,7 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
-import { Stack, useRouter } from "expo-router";
-import { useEffect } from "react";
+import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { SplashScreenController } from "../components/splash-screen-controller";
 import { useAuthContext } from "../hooks/use-auth-context";
@@ -14,14 +13,6 @@ import AuthProvider from "../providers/auth-provider";
 
 function RootNavigator() {
   const { isLoggedIn, isLoading } = useAuthContext();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (isLoading) return;
-    if (!isLoggedIn) {
-      router.replace("/Login");
-    }
-  }, [isLoggedIn, isLoading]);
 
   return (
     <Stack>

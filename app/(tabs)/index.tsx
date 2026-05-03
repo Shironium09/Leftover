@@ -7,14 +7,16 @@ export default function HomeScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Welcome!</Text>
+      <Text style={styles.title}>Welcome {profile?.first_name}!</Text>
 
       <View style={styles.card}>
         <Text style={styles.label}>Username</Text>
         <Text style={styles.value}>{profile?.username ?? "—"}</Text>
 
         <Text style={styles.label}>Full name</Text>
-        <Text style={styles.value}>{profile?.full_name ?? "—"}</Text>
+        <Text style={styles.value}>
+          {`${profile?.first_name ?? "—"} ${profile?.last_name ?? "—"}`}
+        </Text>
       </View>
 
       <SignOutButton />

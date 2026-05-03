@@ -17,7 +17,7 @@ export function useAuth() {
     setLoading(false);
   }
 
-  async function signUpWithEmail() {
+  async function signUpWithEmail(firstName: string, lastName: string) {
     setLoading(true);
     const {
       data: { session },
@@ -25,8 +25,23 @@ export function useAuth() {
     } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: { first_name: firstName, last_name: lastName },
+      },
     });
-    if (error) Alert.alert(error.message);
+
+    console.log("Session:", session);
+    console.log("Error:", error);
+
+    if (error) {
+      Alert.alert(error.message);
+      setLoading(false);
+      return;
+    }
+
+    if (!session) {
+      Alert.alert("Please check your inbox for email verification!");
+    }
     setLoading(false);
   }
 
