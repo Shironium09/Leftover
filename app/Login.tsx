@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, TouchableOpacity, TextInput, Image} from 'react-native';
+import {View, Text, TouchableOpacity, TextInput} from 'react-native';
+import { Image } from 'expo-image';
 import {useRouter} from 'expo-router';
 
 import Logo from '../assets/logo.png';
