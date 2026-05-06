@@ -1,33 +1,54 @@
-import React from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
-import {useRouter} from 'expo-router';
+import React, {useState, useEffect} from 'react';
+import {View, Text, TouchableOpacity, TextInput, ScrollView} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { MOCK_USER, MOCK_RECIPES } from '../../data/mockdata';
+import RecipeCard from '../Components/RecipeCard';
 
-export default function HomeScreen(){
-
+export default function HomeScreen() {
   const router = useRouter();
 
+  const user = MOCK_USER;
+  const recipes = MOCK_RECIPES;
+
+  const [query, setQuery] = useState("");
+
   return (
-    <View>
-      <Text>Home Screen</Text>
-      <TouchableOpacity
-        style={{borderWidth: 1}}
-        onPress={() => router.push('/Recipe')}
-      >
-        <Text>Go to Recipe (from history)</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{borderWidth: 1}}
-        onPress={() => router.push('/ShoppingList')}
-      >
-        <Text>Go to Shopping List</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{borderWidth: 1}}
-        onPress={() => router.push('/Settings')}
-      >
-        <Text>Go to Settings</Text>
-      </TouchableOpacity>
+    <View className="flex-1">
+      {/* Fixed Header */}
+      <View className="bg-emerald-800 w-full rounded-bl-3xl rounded-br-3xl px-7 py-10 gap-5">
+        <View>
+          <Text className="text-white text-4xl font-bold">Good day, {user.firstName}!</Text>
+          <Text className="text-white text-xl font-bold">What's for dinner?</Text>
+        </View>
+        <View className="bg-white flex-row items-center px-4 py-2 rounded-full mt-2 shadow-sm">
+          <Ionicons name="search-outline" size={20} color="gray" />
+          <TextInput
+            className="flex-1 ml-3 text-lg"
+            value={query}
+            onChangeText={(e) => setQuery(e)}
+            placeholder="Search recipes or ingredients..."
+            placeholderTextColor="gray"
+          />
+        </View>
+      </View>
+      <ScrollView className="flex-1 px-5 pt-4" showsVerticalScrollIndicator={false}>
+
+        <View className="flex flex-row items-center justify-between">
+          <View className="flex flex-row items-center gap-2">
+            <Text className="text-xl font-bold">Want to try these recipes again?</Text>
+          </View>
+        </View>
+
+        {
+          recipes.map((recipe) => {
+            return (
+              <RecipeCard key={recipe.id} image={recipe.image} title={recipe.title} time={recipe.time} difficulty={recipe.difficulty}/>
+            )
+          })
+        }
+        <View className="h-10" />
+      </ScrollView>
     </View>
   );
-
 }
