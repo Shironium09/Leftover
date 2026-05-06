@@ -1,0 +1,99 @@
+import { AuthContext } from "../hooks/use-auth-context";
+import { supabase } from "../lib/supabase";
+import { PropsWithChildren, useEffect, useState } from "react";
+
+export default function AuthProvider({ children }: PropsWithChildren) {
+  const [claims, setClaims] = useState<Record<string, any> | null>(null);
+  const [profile, setProfile] = useState<any>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchClaims = async () => {
+      setIsLoading(true);
+
+      const { data, error } = await supabase.auth.getClaims();
+
+      if (error) {
+        console.error("Error fetching claims:", error);
+        await supabase.auth.signOut();
+      }
+
+      setClaims(data?.claims ?? null);
+      setIsLoading(false);
+    };
+
+    fetchClaims();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_event, _session) => {
+      console.log("Auth state changed:", { event: _event });
+      if (_event === "SIGNED_OUT") {
+        setClaims(null);
+        setProfile(null);
+        setIsLoading(false);
+        return;
+      }
+
+      if (_event === "SIGNED_IN" || _event === "TOKEN_REFRESHED") {
+        try {
+          const { data } = await supabase.auth.getClaims();
+          setClaims(data?.claims ?? null);
+        } catch (e) {
+          console.error("getClaims failed:", e);
+          setClaims(null);
+        } finally {
+          setIsLoading(false);
+        }
+        return;
+      }
+
+      try {
+        const { data } = await supabase.auth.getClaims();
+        setClaims(data?.claims ?? null);
+      } catch (e) {
+        console.error("getClaims failed:", e);
+        setClaims(null);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      setIsLoading(true);
+
+      if (claims) {
+        const { data } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", claims.sub)
+          .single();
+
+        setProfile(data);
+      } else {
+        setProfile(null);
+      }
+
+      setIsLoading(false);
+    };
+
+    fetchProfile();
+  }, [claims]);
+
+  return (
+    <AuthContext.Provider
+      value={{
+        claims,
+        isLoading,
+        profile,
+        isLoggedIn: !!claims,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+}
