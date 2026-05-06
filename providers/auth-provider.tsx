@@ -1,59 +1,33 @@
 import { AuthContext } from "../hooks/use-auth-context";
 import { supabase } from "../lib/supabase";
 import { PropsWithChildren, useEffect, useState } from "react";
+import { Session } from "@supabase/supabase-js";
 
 export default function AuthProvider({ children }: PropsWithChildren) {
-  const [claims, setClaims] = useState<Record<string, any> | null>(null);
-  const [profile, setProfile] = useState<any>();
+  const [session, setSession] = useState<Session | null>(null);
+  const [profile, setProfile] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const fetchClaims = async () => {
+    // Fetch the initial session
+    const fetchSession = async () => {
       setIsLoading(true);
-
-      const { data, error } = await supabase.auth.getClaims();
-
-      if (error) {
-        console.error("Error fetching claims:", error);
-        await supabase.auth.signOut();
-      }
-
-      setClaims(data?.claims ?? null);
+      const { data: { session } } = await supabase.auth.getSession();
+      setSession(session);
       setIsLoading(false);
     };
 
-    fetchClaims();
+    fetchSession();
 
+    // Listen for auth state changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, _session) => {
-      console.log("Auth state changed:", { event: _event });
+    } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
+      console.log("Auth state changed:", _event);
+      setSession(newSession);
+
       if (_event === "SIGNED_OUT") {
-        setClaims(null);
         setProfile(null);
-        setIsLoading(false);
-        return;
-      }
-
-      if (_event === "SIGNED_IN" || _event === "TOKEN_REFRESHED") {
-        try {
-          const { data } = await supabase.auth.getClaims();
-          setClaims(data?.claims ?? null);
-        } catch (e) {
-          console.error("getClaims failed:", e);
-          setClaims(null);
-        } finally {
-          setIsLoading(false);
-        }
-        return;
-      }
-
-      try {
-        const { data } = await supabase.auth.getClaims();
-        setClaims(data?.claims ?? null);
-      } catch (e) {
-        console.error("getClaims failed:", e);
-        setClaims(null);
       }
     });
 
@@ -62,35 +36,32 @@ export default function AuthProvider({ children }: PropsWithChildren) {
     };
   }, []);
 
+  // Fetch profile whenever session changes
   useEffect(() => {
     const fetchProfile = async () => {
-      setIsLoading(true);
-
-      if (claims) {
+      if (session?.user) {
         const { data } = await supabase
           .from("profiles")
           .select("*")
-          .eq("id", claims.sub)
+          .eq("id", session.user.id)
           .single();
 
         setProfile(data);
       } else {
         setProfile(null);
       }
-
-      setIsLoading(false);
     };
 
     fetchProfile();
-  }, [claims]);
+  }, [session]);
 
   return (
     <AuthContext.Provider
       value={{
-        claims,
+        claims: session?.user?.user_metadata ?? null,
         isLoading,
         profile,
-        isLoggedIn: !!claims,
+        isLoggedIn: !!session,
       }}
     >
       {children}
