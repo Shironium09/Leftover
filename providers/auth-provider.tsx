@@ -4,6 +4,7 @@ import { PropsWithChildren, useEffect, useState } from "react";
 import { Session } from "@supabase/supabase-js";
 
 export default function AuthProvider({ children }: PropsWithChildren) {
+  const [claims, setClaims] = useState<Record<string, any> | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -27,11 +28,11 @@ export default function AuthProvider({ children }: PropsWithChildren) {
       setSession(newSession);
 
       if (_event === "SIGNED_OUT") {
-    setClaims(null);
-    setProfile(null);
-    setIsLoading(false);
-    return;
-  }
+        setClaims(null);
+        setProfile(null);
+        setIsLoading(false);
+        return;
+      }
     });
 
     return () => {
