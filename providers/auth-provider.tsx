@@ -27,8 +27,11 @@ export default function AuthProvider({ children }: PropsWithChildren) {
       setSession(newSession);
 
       if (_event === "SIGNED_OUT") {
-        setProfile(null);
-      }
+    setClaims(null);
+    setProfile(null);
+    setIsLoading(false);
+    return;
+  }
     });
 
     return () => {
