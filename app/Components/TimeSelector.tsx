@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 interface TimeSelectorProps {
   value: number;
   onChange: (value: number) => void;
 }
 
-const PRESETS = [15, 30, 45, 60, 75, 90, 120];
+const PRESETS = [15, 30, 45, 60, 90, 120];
 
 export default function TimeSelector({ value, onChange }: TimeSelectorProps) {
   const [customValue, setCustomValue] = useState('');
@@ -27,46 +28,51 @@ export default function TimeSelector({ value, onChange }: TimeSelectorProps) {
   };
 
   return (
-    <View className="flex flex-col items-center gap-3">
-      <Text className="text-black text-2xl font-bold text-center">Cooking Time</Text>
-      <View className="flex flex-row flex-wrap justify-center gap-2 mt-2">
+    <View className="bg-white rounded-2xl border border-stone-200 p-5">
+      <View className="flex-row items-center gap-2 mb-4">
+        <Ionicons name="time-outline" size={20} color="#065f46" />
+        <Text className="text-stone-800 text-lg font-bold">Cooking Time</Text>
+      </View>
+
+      <View className="flex flex-row flex-wrap gap-2">
         {PRESETS.map((preset) => {
           const isSelected = value === preset && customValue === '';
           return (
             <TouchableOpacity
               key={preset}
               onPress={() => handlePresetPress(preset)}
-              className={`px-4 py-2 rounded-full border-2 ${
+              className={`px-4 py-2 rounded-full ${
                 isSelected 
-                  ? 'bg-emerald-700 border-emerald-700' 
-                  : 'bg-transparent border-emerald-700'
+                  ? 'bg-emerald-700' 
+                  : 'bg-stone-100 border border-stone-200'
               }`}
             >
-              <Text className={`font-bold text-base ${isSelected ? 'text-white' : 'text-emerald-900'}`}>
+              <Text className={`font-semibold text-sm ${isSelected ? 'text-white' : 'text-stone-600'}`}>
                 {preset} min
               </Text>
             </TouchableOpacity>
           );
         })}
       </View>
-      <View className="flex flex-row justify-center items-center mt-3">
-        <Text className="text-black text-base font-semibold mr-3">Custom:</Text>
-        <View className="flex-row items-center bg-emerald-900 rounded-xl px-4 py-2 border border-emerald-700">
+
+      <View className="flex-row items-center mt-4 gap-2">
+        <Text className="text-stone-500 text-sm font-semibold">Custom:</Text>
+        <View className="flex-row items-center bg-stone-50 border border-stone-200 rounded-full px-4 py-2">
           <TextInput
-            className="text-white text-xl font-bold w-12 text-center"
+            className="text-stone-800 text-base font-bold w-10 text-center"
             keyboardType="number-pad"
             maxLength={3}
             value={customValue}
             onChangeText={handleCustomChange}
             placeholder="--"
-            placeholderTextColor="#6ee7b7"
+            placeholderTextColor="#9ca3af"
             onFocus={() => {
                 if (!customValue && value > 0) {
                     setCustomValue(value.toString());
                 }
             }}
           />
-          <Text className="text-emerald-300 text-lg font-semibold ml-2">mins</Text>
+          <Text className="text-stone-400 text-sm font-semibold ml-1">min</Text>
         </View>
       </View>
     </View>

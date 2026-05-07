@@ -3,6 +3,7 @@ import SignOutButton from "../../components/social-auth-buttons/sign-out-button"
 import { useAuthContext } from "../../hooks/use-auth-context";
 
 export default function HomeScreen() {
+  
   const { profile } = useAuthContext();
 
   return (

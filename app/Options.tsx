@@ -1,18 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TouchableWithoutFeedback, Keyboard, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import TimeSelector from './Components/TimeSelector';
 import OptionSelector from './Components/OptionSelector';
 
-/* 
-    1. The time they want, minimum of 1 minute, maximum of 120 minutes
-    2. The meal type: Breakfast, Lunch, Dinner, or Snack
-    3. The diet type: Keto, Vegan, Vegetarian, Gluten-Free, or None
-    4. The spice level: Mild, Medium, Spicy, or None
-    5. The cuisine type: American, Chinese, Indian, Italian, Japanese, Korean, Mexican, or etc. (This will be an option way)
-*/
-
-export default function GenerateScreen() {
+export default function OptionsScreen() {
 
   const router = useRouter();
 
@@ -23,62 +16,79 @@ export default function GenerateScreen() {
   const [cuisineType, setCuisineType] = useState("");
 
   const changeTime = (time: number) => {
-
     setTime(time);
-
   }
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View className="flex-1 bg-stone-100">
-        <ScrollView 
-          className="flex-1" 
-          contentContainerStyle={{ paddingVertical: 40, paddingBottom: 100 }}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-        >
+    <View className="flex-1 bg-stone-100">
+
+      {/* Header */}
+      <View className="bg-emerald-800 w-full rounded-bl-3xl rounded-br-3xl px-7 py-10 pt-20">
+        <View className="flex-row items-center gap-3">
+          <TouchableOpacity onPress={() => router.back()}>
+            <Ionicons name="arrow-back" size={28} color="white" />
+          </TouchableOpacity>
+          <View>
+            <Text className="text-white text-3xl font-bold">Preferences</Text>
+            <Text className="text-emerald-200 text-base mt-1">Customize your recipe generation</Text>
+          </View>
+        </View>
+      </View>
+
+      <ScrollView 
+        className="flex-1" 
+        contentContainerStyle={{ padding: 20, paddingBottom: 120, gap: 12 }}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
+      >
           <TimeSelector value={time} onChange={(num) => changeTime(num)} />
 
           <OptionSelector 
-            title="Meal Type" 
+            title="Meal Type"
+            icon="restaurant-outline"
             options={["Any", "Breakfast", "Lunch", "Dinner", "Snack"]} 
             selected={mealType || "Any"} 
             onChange={setMealType} 
           />
 
           <OptionSelector 
-            title="Dietary Preference" 
+            title="Dietary Preference"
+            icon="leaf-outline"
             options={["None", "Keto", "Vegan", "Vegetarian", "Gluten-Free"]} 
             selected={dietType || "None"} 
             onChange={setDietType} 
           />
 
           <OptionSelector 
-            title="Spice Level" 
+            title="Spice Level"
+            icon="flame-outline"
             options={["None", "Mild", "Medium", "Spicy"]} 
             selected={spiceLevel || "None"} 
             onChange={setSpiceLevel} 
           />
 
           <OptionSelector 
-            title="Cuisine" 
+            title="Cuisine"
+            icon="globe-outline"
             options={["Any", "American", "Chinese", "Indian", "Italian", "Japanese", "Korean", "Mexican", "Thai", "Mediterranean"]} 
             selected={cuisineType || "Any"} 
-            onChange={setCuisineType} 
+            onChange={setCuisineType}
             horizontal={true}
           />
-
-          <View className="px-5 mt-12">
-            <TouchableOpacity
-              className="bg-emerald-700 py-4 rounded-full shadow-md"
-              onPress={() => router.push('/Confirmation')}
-            >
-              <Text className="text-center text-white text-xl font-bold">Generate Recipe!</Text>
-            </TouchableOpacity>
-          </View>
         </ScrollView>
-      </View>
-    </TouchableWithoutFeedback>
-  );
 
+        {/* Bottom Button */}
+        <View className="absolute bottom-10 left-0 right-0 px-8">
+          <TouchableOpacity
+            className="bg-emerald-700 py-4 rounded-full flex-row items-center justify-center gap-2"
+            onPress={() => router.push('/Confirmation')}
+          >
+            <Ionicons name="sparkles" size={22} color="white" />
+            <Text className="text-center text-white text-xl font-bold">Generate Recipe!</Text>
+          </TouchableOpacity>
+        </View>
+
+      </View>
+  );
 }

@@ -4,21 +4,21 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { MOCK_USER, MOCK_RECIPES } from '../../data/mockdata';
 import RecipeCard from '../Components/RecipeCard';
+import { useAuthContext } from '../../hooks/use-auth-context';
 
 export default function HomeScreen() {
   const router = useRouter();
 
-  const user = MOCK_USER;
+  const { profile } = useAuthContext();
   const recipes = MOCK_RECIPES;
 
   const [query, setQuery] = useState("");
 
   return (
     <View className="flex-1">
-      {/* Fixed Header */}
-      <View className="bg-emerald-800 w-full rounded-bl-3xl rounded-br-3xl px-7 py-10 gap-5">
-        <View>
-          <Text className="text-white text-4xl font-bold">Good day, {user.firstName}!</Text>
+      <View className="bg-emerald-800 w-full rounded-bl-3xl rounded-br-3xl px-7 py-10 pt-20 gap-5">
+        <View className="">
+          <Text className="text-white text-4xl font-bold">Good day, {profile?.first_name || "User"}!</Text>
           <Text className="text-white text-xl font-bold">What's for dinner?</Text>
         </View>
         <View className="bg-white flex-row items-center px-4 py-2 rounded-full mt-2 shadow-sm">

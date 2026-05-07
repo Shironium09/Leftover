@@ -23,11 +23,11 @@ function RootNavigator() {
         <Stack.Screen name="RecipeList" options={{ headerShown: false }} />
         <Stack.Screen name="ShoppingList" options={{ headerShown: false }} />
         <Stack.Screen name="Settings" options={{ headerShown: false }} />
-        <Stack.Screen name="Timer" options={{ headerShown: false }} />
         <Stack.Screen name="Confirmation" options={{ headerShown: false }} />
         <Stack.Screen name="Options" options={{ headerShown: false }} />
       </Stack.Protected>
       <Stack.Protected guard={!isLoggedIn}>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="Login" options={{ headerShown: false }} />
         <Stack.Screen name="Signup" options={{ headerShown: false }} />
       </Stack.Protected>

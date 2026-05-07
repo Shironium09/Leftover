@@ -49,47 +49,74 @@ export default function ImageInput({ image, base64, onImageChange }: ImageInputP
     }
   };
 
-  const showOptions = () => {
-    Alert.alert(
-      'Add a photo',
-      'Take a photo of your ingredients or choose from your gallery.',
-      [
-        { text: 'Take Photo', onPress: takePhoto },
-        { text: 'Choose from Gallery', onPress: pickImage },
-        ...(image ? [{ text: 'Remove Photo', onPress: () => onImageChange(null, null), style: 'destructive' as const }] : []),
-        { text: 'Cancel', style: 'cancel' as const },
-      ]
-    );
-  };
-
   return (
-    <View className="flex flex-col items-center gap-3 mt-8">
-      <Text className="text-emerald-800 text-2xl font-bold text-center">Photo of Ingredients</Text>
-
-      <TouchableOpacity
-        onPress={showOptions}
-        className="w-52 h-52 rounded-2xl border-2 border-dashed border-emerald-800 items-center justify-center overflow-hidden mt-2"
-        activeOpacity={0.7}
-      >
+    <View className="px-5">
+      <View className="bg-white rounded-2xl border border-stone-200 overflow-hidden">
         {image ? (
-          <Image 
-            source={{ uri: image }} 
-            className="w-full h-full"
-            contentFit="cover"
-          />
+          <View>
+            <Image 
+              source={{ uri: image }} 
+              className="w-full h-64"
+              contentFit="cover"
+            />
+            <View className="flex-row border-t border-stone-200">
+              <TouchableOpacity 
+                onPress={takePhoto}
+                className="flex-1 flex-row items-center justify-center gap-2 py-3 border-r border-stone-200"
+                activeOpacity={0.6}
+              >
+                <Ionicons name="camera-outline" size={20} color="#065f46" />
+                <Text className="text-emerald-800 font-semibold">Retake</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                onPress={pickImage}
+                className="flex-1 flex-row items-center justify-center gap-2 py-3 border-r border-stone-200"
+                activeOpacity={0.6}
+              >
+                <Ionicons name="images-outline" size={20} color="#065f46" />
+                <Text className="text-emerald-800 font-semibold">Gallery</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                onPress={() => onImageChange(null, null)}
+                className="flex-1 flex-row items-center justify-center gap-2 py-3"
+                activeOpacity={0.6}
+              >
+                <Ionicons name="trash-outline" size={20} color="#dc2626" />
+                <Text className="text-red-600 font-semibold">Remove</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         ) : (
-          <View className="items-center gap-2">
-            <Ionicons name="camera-outline" size={48} color="#267358" />
-            <Text className="text-emerald-800 text-sm font-semibold text-center">Tap to add a photo</Text>
+          // Empty state
+          <View className="py-10 px-6 items-center gap-4">
+            <View className="w-20 h-20 rounded-full bg-emerald-50 items-center justify-center">
+              <Ionicons name="camera" size={36} color="#065f46" />
+            </View>
+            <View className="items-center gap-1">
+              <Text className="text-stone-800 text-lg font-bold">Add your ingredients</Text>
+              <Text className="text-stone-400 text-sm text-center">Take a photo or pick one from your gallery</Text>
+            </View>
+            <View className="flex-row gap-3 mt-2">
+              <TouchableOpacity 
+                onPress={takePhoto}
+                className="flex-row items-center gap-2 bg-emerald-700 px-5 py-3 rounded-full"
+                activeOpacity={0.7}
+              >
+                <Ionicons name="camera-outline" size={18} color="white" />
+                <Text className="text-white font-bold">Camera</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                onPress={pickImage}
+                className="flex-row items-center gap-2 bg-stone-100 border border-stone-200 px-5 py-3 rounded-full"
+                activeOpacity={0.7}
+              >
+                <Ionicons name="images-outline" size={18} color="#065f46" />
+                <Text className="text-emerald-800 font-bold">Gallery</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
-      </TouchableOpacity>
-
-      {image && (
-        <TouchableOpacity onPress={showOptions}>
-          <Text className="text-emerald-300 text-sm font-semibold underline">Change photo</Text>
-        </TouchableOpacity>
-      )}
+      </View>
     </View>
   );
 }
