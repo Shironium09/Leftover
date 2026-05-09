@@ -1,3 +1,4 @@
+import { Session } from "@supabase/supabase-js";
 import { createContext, useContext } from "react";
 
 export type AuthData = {
@@ -5,6 +6,7 @@ export type AuthData = {
   profile?: any | null;
   isLoading: boolean;
   isLoggedIn: boolean;
+  session: Session | null;
 };
 
 export const AuthContext = createContext<AuthData>({
@@ -12,6 +14,7 @@ export const AuthContext = createContext<AuthData>({
   profile: undefined,
   isLoading: true,
   isLoggedIn: false,
+  session: null,
 });
 
 export const useAuthContext = () => useContext(AuthContext);
