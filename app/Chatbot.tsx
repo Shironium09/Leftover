@@ -50,7 +50,6 @@ export default function ChatbotScreen() {
   const [recipeHistory, setRecipeHistory] = useState<any[]>([]);
   const flatListRef = useRef<FlatList>(null);
 
-  // Fetch last 5 recipes for general chat context
   useEffect(() => {
     const fetchRecipeHistory = async () => {
       if (!session?.user || currentRecipe) return;
@@ -85,13 +84,12 @@ export default function ChatbotScreen() {
     setLoading(true);
 
     try {
-      // Build chat history for Gemini (skip initial greeting)
+
       const chatHistory: ChatMessage[] = messages.slice(1).map((msg) => ({
         role: msg.sender === "user" ? "user" : "model",
         content: msg.text,
       }));
 
-      // Call Gemini
       const response = await sendChatMessage(
         userText,
         chatHistory,

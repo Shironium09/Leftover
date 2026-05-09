@@ -6,9 +6,22 @@ import {
   FlatList,
   ActivityIndicator,
   Alert,
+  ToastAndroid,
+  Platform,
 } from "react-native";
+import { Image } from "expo-image";
 import { useRouter, useLocalSearchParams } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import { generateRecipes, Recipe } from "../lib/gemini_recipes";
+import { getRecipeImageUrl } from "../lib/recipe_image";
+import { saveRecipe } from "../lib/supabase_recipes";
+import GeneratedRecipeCard from "./Components/GeneratedRecipeCard";
+
+function showToast(message: string) {
+  if (Platform.OS === "android") {
+    ToastAndroid.show(message, ToastAndroid.SHORT);
+  }
+}
 
 export default function RecipeListScreen() {
   const router = useRouter();
@@ -20,8 +33,10 @@ export default function RecipeListScreen() {
     spiceLevel,
     cuisineType,
   } = useLocalSearchParams();
+
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -44,6 +59,36 @@ export default function RecipeListScreen() {
 
     fetchRecipes();
   }, []);
+
+  const handleSelectRecipe = async (item: Recipe) => {
+    const imageUrl = getRecipeImageUrl(item.name);
+
+    setSaving(item.name);
+    try {
+      await saveRecipe(
+        item,
+        {
+          meal_type: mealType as string,
+          diet_type: dietType as string,
+          cuisine_type: cuisineType as string,
+          spice_level: spiceLevel as string,
+        },
+        imageUrl,
+      );
+      showToast("Recipe saved!");
+    } catch (e) {
+      console.warn("Could not save recipe:", e);
+    } finally {
+      setSaving(null);
+    }
+
+    router.push({
+      pathname: "/Recipe",
+      params: {
+        recipe: JSON.stringify({ ...item, image_url: imageUrl }),
+      },
+    });
+  };
 
   if (loading) {
     return (
@@ -70,25 +115,19 @@ export default function RecipeListScreen() {
         data={recipes}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={{ padding: 20, gap: 12 }}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            className="bg-white rounded-2xl p-4 border border-stone-200"
-            onPress={() =>
-              router.push({
-                pathname: "/Recipe",
-                params: { recipe: JSON.stringify(item) },
-              })
-            }
-          >
-            <Text className="text-stone-800 text-xl font-bold">
-              {item.name}
-            </Text>
-            <Text className="text-gray-500 mt-1">⏱ {item.prep_time} mins</Text>
-            <Text className="text-gray-500 mt-1">
-              {item.ingredients.length} ingredients
-            </Text>
-          </TouchableOpacity>
-        )}
+        renderItem={({ item }) => {
+          const imageUrl = getRecipeImageUrl(item.name);
+          const isSaving = saving === item.name;
+
+          return (
+            <GeneratedRecipeCard
+              recipe={item}
+              imageUrl={imageUrl}
+              isSaving={isSaving}
+              onPress={() => handleSelectRecipe(item)}
+            />
+          );
+        }}
       />
     </View>
   );

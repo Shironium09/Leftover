@@ -3,11 +3,13 @@ import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import { getRecipeImageUrl } from "../lib/recipe_image";
 
 export default function RecipeScreen() {
   const router = useRouter();
   const { recipe: recipeParam } = useLocalSearchParams();
   const recipe = JSON.parse(recipeParam as string);
+  const imageUrl: string = recipe.image_url ?? getRecipeImageUrl(recipe.name);
   const [activeTab, setActiveTab] = useState<"ingredients" | "steps">(
     "ingredients",
   );
@@ -15,25 +17,35 @@ export default function RecipeScreen() {
   return (
     <View className="flex-1 bg-stone-100">
       {/* Header */}
-      <View className="bg-emerald-800 w-full rounded-bl-3xl rounded-br-3xl px-7 py-10 pt-20">
-        <View className="flex-row items-center gap-3 mb-4">
-          <TouchableOpacity onPress={() => router.back()}>
-            <Ionicons name="arrow-back" size={28} color="white" />
-          </TouchableOpacity>
-          <Text
-            className="text-white text-2xl font-bold flex-1"
-            numberOfLines={2}
-          >
-            {recipe.name}
-          </Text>
-        </View>
+      <View className="bg-emerald-800 w-full rounded-bl-3xl rounded-br-3xl overflow-hidden">
+        {/* Food image banner */}
+        <Image
+          source={{ uri: imageUrl }}
+          style={{ width: "100%", height: 200 }}
+          contentFit="cover"
+          transition={400}
+        />
+        {/* Overlay gradient content */}
+        <View className="px-7 py-5">
+          <View className="flex-row items-center gap-3 mb-3">
+            <TouchableOpacity onPress={() => router.back()}>
+              <Ionicons name="arrow-back" size={28} color="white" />
+            </TouchableOpacity>
+            <Text
+              className="text-white text-2xl font-bold flex-1"
+              numberOfLines={2}
+            >
+              {recipe.name}
+            </Text>
+          </View>
 
-        {/* Prep time */}
-        <View className="flex-row items-center gap-2">
-          <Ionicons name="time-outline" size={18} color="#a7f3d0" />
-          <Text className="text-emerald-200 text-base">
-            {recipe.prep_time} mins
-          </Text>
+          {/* Prep time */}
+          <View className="flex-row items-center gap-2">
+            <Ionicons name="time-outline" size={18} color="#a7f3d0" />
+            <Text className="text-emerald-200 text-base">
+              {recipe.prep_time} mins
+            </Text>
+          </View>
         </View>
       </View>
 
