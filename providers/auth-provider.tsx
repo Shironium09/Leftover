@@ -12,7 +12,9 @@ export default function AuthProvider({ children }: PropsWithChildren) {
     // Fetch the initial session
     const fetchSession = async () => {
       setIsLoading(true);
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       setSession(session);
       setIsLoading(false);
     };
@@ -62,6 +64,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
         isLoading,
         profile,
         isLoggedIn: !!session,
+        session,
       }}
     >
       {children}
